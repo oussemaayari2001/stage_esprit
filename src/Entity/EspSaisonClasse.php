@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EspSaisonClasseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,7 +14,7 @@ class EspSaisonClasse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?string $code_cl = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 10)]
     private ?string $annee_deb = null;
@@ -22,6 +24,9 @@ class EspSaisonClasse
 
     #[ORM\Column(length: 300)]
     private ?string $description = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $code_cl = null;
 
     #[ORM\Column]
     private ?int $nb_etudiant = null;
@@ -53,9 +58,21 @@ class EspSaisonClasse
     #[ORM\Column(length: 1)]
     private ?string $cl_eclate = null;
 
-    public function getCodeCl(): ?int
+    #[ORM\OneToMany(targetEntity: Classe::class, mappedBy: 'Saison', orphanRemoval: true)]
+    private Collection $Classes;
+
+    #[ORM\ManyToOne(inversedBy: 'saisons')]
+    #[ORM\JoinColumn(name: 'annee_deb', referencedColumnName: 'annee_deb', nullable: false)]
+    private ?EspSaisonUniversitaire $espSaisonUniversitaire = null;
+
+    public function __construct()
     {
-        return $this->code_cl;
+        $this->Classes = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getAnneeDeb(): ?string
@@ -63,10 +80,9 @@ class EspSaisonClasse
         return $this->annee_deb;
     }
 
-    public function setAnneeDeb(string $annee_deb): static
+    public function setAnneeDeb(?string $annee_deb): static
     {
         $this->annee_deb = $annee_deb;
-
         return $this;
     }
 
@@ -78,7 +94,6 @@ class EspSaisonClasse
     public function setDateDemarrage(\DateTimeInterface $date_demarrage): static
     {
         $this->date_demarrage = $date_demarrage;
-
         return $this;
     }
 
@@ -90,7 +105,17 @@ class EspSaisonClasse
     public function setDescription(string $description): static
     {
         $this->description = $description;
+        return $this;
+    }
 
+    public function getCodeCl(): ?string
+    {
+        return $this->code_cl;
+    }
+
+    public function setCodeCl(string $code_cl): static
+    {
+        $this->code_cl = $code_cl;
         return $this;
     }
 
@@ -102,7 +127,6 @@ class EspSaisonClasse
     public function setNbEtudiant(int $nb_etudiant): static
     {
         $this->nb_etudiant = $nb_etudiant;
-
         return $this;
     }
 
@@ -114,7 +138,6 @@ class EspSaisonClasse
     public function setSallePrincipale(string $salle_principale): static
     {
         $this->salle_principale = $salle_principale;
-
         return $this;
     }
 
@@ -126,7 +149,6 @@ class EspSaisonClasse
     public function setSalleSecondaire1(string $salle_secondaire_1): static
     {
         $this->salle_secondaire_1 = $salle_secondaire_1;
-
         return $this;
     }
 
@@ -138,7 +160,6 @@ class EspSaisonClasse
     public function setSalleSecondaire2(string $salle_secondaire_2): static
     {
         $this->salle_secondaire_2 = $salle_secondaire_2;
-
         return $this;
     }
 
@@ -150,7 +171,6 @@ class EspSaisonClasse
     public function setNature(string $nature): static
     {
         $this->nature = $nature;
-
         return $this;
     }
 
@@ -162,7 +182,6 @@ class EspSaisonClasse
     public function setTypeClasse(string $type_classe): static
     {
         $this->type_classe = $type_classe;
-
         return $this;
     }
 
@@ -174,7 +193,6 @@ class EspSaisonClasse
     public function setNbSeance(int $nb_seance): static
     {
         $this->nb_seance = $nb_seance;
-
         return $this;
     }
 
@@ -186,7 +204,6 @@ class EspSaisonClasse
     public function setClasseEntreprise(string $classe_entreprise): static
     {
         $this->classe_entreprise = $classe_entreprise;
-
         return $this;
     }
 
@@ -198,7 +215,6 @@ class EspSaisonClasse
     public function setSemestre(int $semestre): static
     {
         $this->semestre = $semestre;
-
         return $this;
     }
 
@@ -210,7 +226,49 @@ class EspSaisonClasse
     public function setClEclate(string $cl_eclate): static
     {
         $this->cl_eclate = $cl_eclate;
+        return $this;
+    }
 
+    public function __toString(): string
+    {
+        return $this->annee_deb ?? '';
+    }
+
+    /**
+     * @return Collection<int, Classe>
+     */
+    public function getClasses(): Collection
+    {
+        return $this->Classes;
+    }
+
+    public function addClass(Classe $class): static
+    {
+        if (!$this->Classes->contains($class)) {
+            $this->Classes->add($class);
+            $class->setSaison($this);
+        }
+        return $this;
+    }
+
+    public function removeClass(Classe $class): static
+    {
+        if ($this->Classes->removeElement($class)) {
+            if ($class->getSaison() === $this) {
+                $class->setSaison(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getEspSaisonUniversitaire(): ?EspSaisonUniversitaire
+    {
+        return $this->espSaisonUniversitaire;
+    }
+
+    public function setEspSaisonUniversitaire(?EspSaisonUniversitaire $espSaisonUniversitaire): static
+    {
+        $this->espSaisonUniversitaire = $espSaisonUniversitaire;
         return $this;
     }
 }

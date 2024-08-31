@@ -20,32 +20,36 @@ class EspPlanEtudeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EspPlanEtude::class);
     }
+
     public function findOneByCodeModule(string $codeModule): ?EspPlanEtude
     {
         return $this->findOneBy(['code_module' => $codeModule]);
     }
-//    /**
-//     * @return EspPlanEtude[] Returns an array of EspPlanEtude objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?EspPlanEtude
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    // Uncomment and adjust these methods as needed for your application
+
+    /**
+     * @return EspPlanEtude[] Returns an array of EspPlanEtude objects
+     */
+    // public function findByExampleField($value): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->orderBy('e.id', 'ASC')
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult()
+    //     ;
+    // }
+
+    // public function findOneBySomeField($value): ?EspPlanEtude
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->getQuery()
+    //         ->getOneOrNullResult()
+    //     ;
+    // }
 }

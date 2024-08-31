@@ -21,28 +21,51 @@ class EspSaisonUniversitaireRepository extends ServiceEntityRepository
         parent::__construct($registry, EspSaisonUniversitaire::class);
     }
 
-//    /**
-//     * @return EspSaisonUniversitaire[] Returns an array of EspSaisonUniversitaire objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    // Uncomment and adjust these methods as needed for your application
 
-//    public function findOneBySomeField($value): ?EspSaisonUniversitaire
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return EspSaisonUniversitaire[] Returns an array of EspSaisonUniversitaire objects
+     */
+    // public function findByExampleField($value): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->orderBy('e.id', 'ASC')
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult()
+    //     ;
+    // }
+
+    // public function findOneBySomeField($value): ?EspSaisonUniversitaire
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->andWhere('e.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->getQuery()
+    //         ->getOneOrNullResult()
+    //     ;
+    // }
+
+    public function search(string $searchTerm): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.description LIKE :searchTerm')
+            ->orWhere('s.date_debut LIKE :searchTerm')
+            ->orWhere('s.date_fin LIKE :searchTerm')
+            ->orWhere('s.observation LIKE :searchTerm')
+            ->setParameter('searchTerm', '%'.$searchTerm.'%')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
+
+    public function findAllSortedBy($sortField, $sortOrder)
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.' . $sortField, $sortOrder)
+            ->getQuery()
+            ->getResult();
+    }
 }

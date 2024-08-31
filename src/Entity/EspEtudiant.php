@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\EspEtudiantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EspEtudiantRepository::class)]
 class EspEtudiant
-{
-    #[ORM\Id]
+{   #[ORM\Id]  
+    #[ORM\GeneratedValue]
     #[ORM\Column(length: 10)]
     private ?string $id_et = null;
 
@@ -24,6 +26,11 @@ class EspEtudiant
 
     #[ORM\Column(length: 30)]
     private ?string $lieu_nais_et = null;
+
+    public function __toString(): string
+    {
+        return $this->id ?? '';
+    }
 
     #[ORM\Column(length: 2)]
     private ?string $nature_et = null;
@@ -100,8 +107,8 @@ class EspEtudiant
     #[ORM\Column(length: 1000)]
     private ?string $observation_et = null;
 
-    #[ORM\Column(length: 5000)]
-    private ?string $photo_et = null;
+    #[ORM\Column(type: Types::BINARY)]
+    private $photo_et = null;
 
     #[ORM\Column(length: 1)]
     private ?string $sexe = null;
@@ -163,39 +170,31 @@ class EspEtudiant
     #[ORM\Column(length: 60)]
     private ?string $e_mail_parent = null;
 
-    public function getIdEt(): ?string
+    #[ORM\Column]
+    private ?bool $inscription = null;
+
+    #[ORM\Column]
+    private ?bool $affecte = null;
+
+    #[ORM\ManyToOne(inversedBy: 'etudiants')]
+    #[ORM\JoinColumn(name: 'code_cl', referencedColumnName: 'code_cl', nullable: false)]
+    private ?Classe $classe = null;
+
+    #[ORM\OneToMany(targetEntity: EspInscription::class, mappedBy: 'etudiant', orphanRemoval: true)]
+    private Collection $espInscriptions;
+
+    #[ORM\OneToOne(mappedBy: 'id_et', cascade: ['persist', 'remove'])]
+    private ?PhotosEtudiant $photo = null;
+
+    public function __construct()
+    {
+        $this->espInscriptions = new ArrayCollection();
+    }
+
+    public function getIdEt():  ?string
     {
         return $this->id_et;
     }
-    public function setIdEt(string $id_et): self
-    {
-        $this->id_et = $id_et;
-        return $this;
-    }
-
-    // public static function generateIdEt(string $sexe): string
-    // {
-    //     // Determine the prefix based on gender
-    //     $prefix = ($sexe === 'M') ? '233JMT' : '233JFT';
-
-    //     // Generate a random number for the ID
-    //     $number = str_pad(random_int(1, 9999), 4, '0', STR_PAD_LEFT);
-
-    //     // Return the combined ID
-    //     return $prefix . $number;
-    // }
-    public static function generateIdEt(string $gender): string
-    {
-        // Determine the prefix based on gender
-        $prefix = ($gender === 'M') ? '233JMT' : '233JFT';
-
-        // Generate a random number for the ID
-        $number = str_pad(random_int(1, 9999), 4, '0', STR_PAD_LEFT);
-
-        // Return the combined ID
-        return $prefix . $number;
-    }
-
 
     public function getNomEt(): ?string
     {
@@ -545,12 +544,12 @@ class EspEtudiant
         return $this;
     }
 
-    public function getPhotoEt(): ?string
+    public function getPhotoEt()
     {
         return $this->photo_et;
     }
 
-    public function setPhotoEt($photo_et): self
+    public function setPhotoEt($photo_et): static
     {
         $this->photo_et = $photo_et;
 
@@ -796,57 +795,103 @@ class EspEtudiant
 
         return $this;
     }
-    #[ORM\OneToOne(mappedBy: 'id_et', cascade: ['persist', 'remove'])]
-    private ?PhotosEtudiant $photosEtudiant = null;
-    public function getPhotosEtudiant(): ?PhotosEtudiant
+
+    public function isInscription(): ?bool
     {
-        return $this->photosEtudiant;
+        return $this->inscription;
     }
 
-    public function setPhotosEtudiant(?PhotosEtudiant $photosEtudiant): static
+    public function setInscription(bool $inscription): static
     {
-        $this->photosEtudiant = $photosEtudiant;
-        // Set the inverse side of the relationship if needed
-        if ($photosEtudiant !== null) {
-            $photosEtudiant->setIdEt($this);
+        $this->inscription = $inscription;
+
+        return $this;
+    }
+
+    public function isAffecte(): ?bool
+    {
+        return $this->affecte;
+    }
+
+    public function setAffecte(bool $affecte): static
+    {
+        $this->affecte = $affecte;
+
+        return $this;
+    }
+
+    public function getClasse(): ?Classe
+    {
+        return $this->classe;
+    }
+
+    public function setClasse(?Classe $classe): static
+    {
+        $this->classe = $classe;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EspInscription>
+     */
+    public function getEspInscriptions(): Collection
+    {
+        return $this->espInscriptions;
+    }
+
+    public function addEspInscription(EspInscription $espInscription): static
+    {
+        if (!$this->espInscriptions->contains($espInscription)) {
+            $this->espInscriptions->add($espInscription);
+            $espInscription->setEtudiant($this);
         }
 
         return $this;
     }
-    public function getPhotoBase64(): ?string
-    {
-        return $this->photo_et ? base64_encode(stream_get_contents($this->photo_et)) : null;
-    }
-    public function getNiveauCourantEtLabel(): string
-    {
-        $labels = [
-            '1' => '1ère',
-            '2' => '2ème',
-            '3' => '3ème',
-            '4' => '4ème',
-            '5' => '5ème',
-            '6' => 'Cs',
-            '7' => 'Fc',
-            '8' => 'Ep1',
-            '9' => 'Ep2',
-        ];
 
-        return $labels[$this->niveau_courant_et] ?? 'Unknown'; // Return the label based on the value
-    }
-    public function getNiveauAccéesEtLabel(): string
+    public function removeEspInscription(EspInscription $espInscription): static
     {
-        $labels = [
-            '1' => '1ère',
-            '2' => '2ème',
-            '3' => '3ème',
-            '4' => '4ème',
-            '5' => '5ème',
-            '6' => 'Cs',
-            '7' => 'Fc',
-            '8' => 'Ep1',
-            '9' => 'Ep2',
-        ];
+        if ($this->espInscriptions->removeElement($espInscription)) {
+            // set the owning side to null (unless already changed)
+            if ($espInscription->getEtudiant() === $this) {
+                $espInscription->setEtudiant(null);
+            }
+        }
 
-        return $labels[$this->niveau_acces] ?? 'Unknown'; // Return the label based on the value
+        return $this;
+    }
+
+    public function getPhoto(): ?PhotosEtudiant
+    {
+        return $this->photo;
+    }
+    public function setIdEt(string $id_et): self
+    {
+        $this->id_et = $id_et;
+        return $this;
+    }
+    public static function generateIdEt(string $gender): string
+    {
+        // Determine the prefix based on gender
+        $prefix = ($gender === 'M') ? '233JMT' : '233JFT';
+
+        // Generate a random number for the ID
+        $number = str_pad(random_int(1, 9999), 4, '0', STR_PAD_LEFT);
+
+        // Return the combined ID
+        return $prefix . $number;
+    }
+
+    public function setPhoto(PhotosEtudiant $photo): static
+    {
+        // set the owning side of the relation if necessary
+        if ($photo->getIdEt() !== $this) {
+            $photo->setIdEt($this);
+        }
+
+        $this->photo = $photo;
+
+        return $this;
     }
 }

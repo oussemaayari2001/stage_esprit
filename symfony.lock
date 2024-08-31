@@ -55,6 +55,18 @@
             "./tests/bootstrap.php"
         ]
     },
+    "sensio/framework-extra-bundle": {
+        "version": "6.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        },
+        "files": [
+            "./config/packages/sensio_framework_extra.yaml"
+        ]
+    },
     "symfony/console": {
         "version": "5.4",
         "recipe": {
@@ -230,7 +242,7 @@
         },
         "files": [
             "./config/packages/twig.yaml",
-            "./templates/base.html.twig"
+            "./templates/.gitignore"
         ]
     },
     "symfony/validator": {
@@ -239,7 +251,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "5.3",
-            "ref": "c32cfd98f714894c4f128bb99aa2530c1227603c"
+            "ref": "d70b489cc7f8c464209e7c40cfba85e3a9cf979d"
         },
         "files": [
             "./config/packages/validator.yaml"
@@ -250,12 +262,25 @@
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "5.3",
-            "ref": "24bbc3d84ef2f427f82104f766014e799eefcc3e"
+            "version": "5.4",
+            "ref": "c1c3b1f18e7b6f2e61c758de2e7d5a435d5db9d0"
         },
         "files": [
-            "./config/packages/web_profiler.yaml",
-            "./config/routes/web_profiler.yaml"
+            "./config/packages/web_profiler.yaml"
+        ]
+    },
+    "symfony/webapp-pack": {
+        "version": "1.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "f8d6f2c08db6c4e8549e890e1b9230f76f3d1b4b"
+        },
+        "files": [
+            "./public/.gitignore",
+            "./public/index.php",
+            "./.env"
         ]
     },
     "twig/extra-bundle": {

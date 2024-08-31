@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class EspModule
 {
     #[ORM\Id]
-
+    #[ORM\GeneratedValue]
     #[ORM\Column(length: 10)]
     private ?string $code_module = null;
 
@@ -22,7 +22,6 @@ class EspModule
     #[ORM\Column]
     private ?int $nb_heures = null;
 
- 
     public function getCodeModule(): ?string
     {
         return $this->code_module;
@@ -70,6 +69,7 @@ class EspModule
 
         return $this;
     }
+
     public function __toString(): string
     {
         return (string)$this->code_module; // Adjust as needed

@@ -10,13 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 class EspContrat
 {
     #[ORM\Id]
-
     #[ORM\Column(length: 10)]
     private ?string $numord = null;
 
     #[ORM\Column(length: 4)]
     private ?string $annee = null;
-
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_etab = null;
@@ -29,7 +27,6 @@ class EspContrat
 
     #[ORM\Column(length: 40)]
     private ?string $institution = null;
-
 
     public function getNumord(): ?string
     {
@@ -54,8 +51,6 @@ class EspContrat
 
         return $this;
     }
-
-
 
     public function getDateEtab(): ?\DateTimeInterface
     {

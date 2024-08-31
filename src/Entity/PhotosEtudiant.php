@@ -10,12 +10,21 @@ use Doctrine\ORM\Mapping as ORM;
 class PhotosEtudiant
 {
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: EspEtudiant::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: "id_et", referencedColumnName: "id_et", nullable: false)] // Ensure the join column is not nullable
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\OneToOne(inversedBy: 'photo', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name :"id_et", referencedColumnName :"id_et")]
     private ?EspEtudiant $id_et = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: false)] // Ensure the BLOB column is not nullable
+    #[ORM\Column(type: Types::BLOB)]
     private $photos_id = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getPhotosId()
     {
@@ -34,7 +43,7 @@ class PhotosEtudiant
         return $this->id_et;
     }
 
-    public function setIdEt(?EspEtudiant $id_et): static
+    public function setIdEt(EspEtudiant $id_et): static
     {
         $this->id_et = $id_et;
 

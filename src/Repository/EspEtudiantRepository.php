@@ -20,6 +20,8 @@ class EspEtudiantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EspEtudiant::class);
     }
+
+    // Method to get establishment origin data
     public function getEtabOrigineData(): array
     {
         return $this->createQueryBuilder('e')
@@ -39,28 +41,30 @@ class EspEtudiantRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    //    /**
-    //     * @return EspEtudiant[] Returns an array of EspEtudiant objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    // Uncomment and adjust these methods as needed for your application
 
-    //    public function findOneBySomeField($value): ?EspEtudiant
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return EspEtudiant[] Returns an array of EspEtudiant objects
+     */
+    public function findByExampleField($value): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('e.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findOneBySomeField($value): ?EspEtudiant
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

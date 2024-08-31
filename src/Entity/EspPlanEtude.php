@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EspPlanEtudeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,20 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
 class EspPlanEtude
 {
     #[ORM\Id]
-    #[ORM\ManyToOne(targetEntity: EspModule::class)]
-    #[ORM\JoinColumn(name: 'code_module', referencedColumnName: 'code_module')]
-    private ?EspModule $code_module = null;
-
-    #[ORM\ManyToOne(targetEntity: EspEnseignant::class)]
-    #[ORM\JoinColumn(name: 'id_ens', referencedColumnName: 'id_ens')]
-    private ?EspEnseignant $id_ens = null;
-
-    #[ORM\ManyToOne(targetEntity: EspEnseignant::class)]
-    #[ORM\JoinColumn(name: 'id_ens2', referencedColumnName: 'id_ens')]
-    private ?EspEnseignant $id_ens2 = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(length: 10)]
+    private ?int $id = null;
 
     #[ORM\Column(length: 5)]
     private ?string $num_panier = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $code_module = null;
 
     #[ORM\Column(length: 10)]
     private ?string $code_cl = null;
@@ -70,9 +67,14 @@ class EspPlanEtude
     #[ORM\Column(length: 10)]
     private ?string $esp_annee_deb = null;
 
-    #[ORM\ManyToOne(targetEntity: Salle::class)]
-    #[ORM\JoinColumn(name: 'code_salle', referencedColumnName: 'code_salle')]
-    private ?Salle $code_salle = null;
+    #[ORM\Column(length: 3)]
+    private ?string $code_salle = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $id_ens = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $id_ens2 = null;
 
     #[ORM\Column]
     private ?int $nb_heures_ens = null;
@@ -80,14 +82,22 @@ class EspPlanEtude
     #[ORM\Column]
     private ?int $nb_heures_ens2 = null;
 
-    // Getter and Setter methods
+    public function __toString(): string
+    {
+        return $this->code_module ?? '';
+    }
 
-    public function getCodeModule(): ?EspModule
+    public function getID(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCodeModule(): ?string
     {
         return $this->code_module;
     }
 
-    public function setCodeModule(?EspModule $code_module): static
+    public function setCodeModule(string $code_module): static
     {
         $this->code_module = $code_module;
         return $this;
@@ -207,27 +217,7 @@ class EspPlanEtude
     {
         return $this->date_fin;
     }
-    public function getIdEns(): ?EspEnseignant
-    {
-        return $this->id_ens;
-    }
 
-    public function setIdEns(?EspEnseignant $id_ens): static
-    {
-        $this->id_ens = $id_ens;
-        return $this;
-    }
-
-    public function getIdEns2(): ?EspEnseignant
-    {
-        return $this->id_ens2;
-    }
-
-    public function setIdEns2(?EspEnseignant $id_ens2): static
-    {
-        $this->id_ens2 = $id_ens2;
-        return $this;
-    }
     public function setDateFin(\DateTimeInterface $date_fin): static
     {
         $this->date_fin = $date_fin;
@@ -289,14 +279,36 @@ class EspPlanEtude
         return $this;
     }
 
-    public function getCodeSalle(): ?Salle
+    public function getCodeSalle(): ?string
     {
         return $this->code_salle;
     }
 
-    public function setCodeSalle(?Salle $code_salle): static
+    public function setCodeSalle(string $code_salle): static
     {
         $this->code_salle = $code_salle;
+        return $this;
+    }
+
+    public function getIdEns(): ?string
+    {
+        return $this->id_ens;
+    }
+
+    public function setIdEns(string $id_ens): static
+    {
+        $this->id_ens = $id_ens;
+        return $this;
+    }
+
+    public function getIdEns2(): ?string
+    {
+        return $this->id_ens2;
+    }
+
+    public function setIdEns2(string $id_ens2): static
+    {
+        $this->id_ens2 = $id_ens2;
         return $this;
     }
 

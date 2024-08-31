@@ -10,8 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class EspEnseignant
 {
     #[ORM\Id]
-
- #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10)]
     private ?string $id_ens = null;
 
     #[ORM\Column(length: 30)]
@@ -37,8 +36,6 @@ class EspEnseignant
 
     #[ORM\Column(length: 300)]
     private ?string $observation = null;
-
-  
 
     public function getIdEns(): ?string
     {
@@ -147,6 +144,7 @@ class EspEnseignant
 
         return $this;
     }
+
     public function __toString(): string
     {
         return $this->id_ens ?? '';

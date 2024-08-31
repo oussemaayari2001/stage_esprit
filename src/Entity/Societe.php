@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SocieteRepository::class)]
 class Societe
-{ #[ORM\Id]
+{
+    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(length: 2)]
     private ?string $code_soc = null;
@@ -75,7 +76,6 @@ class Societe
 
     #[ORM\Column]
     private ?int $taux_tp = null;
-
 
     public function getCodeSoc(): ?string
     {

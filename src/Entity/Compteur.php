@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CompteurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +13,9 @@ class Compteur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
     #[ORM\Column(length: 2)]
     private ?string $code_cpt = null;
 
@@ -29,6 +34,23 @@ class Compteur
     #[ORM\Column]
     private ?int $valeur = null;
 
+    #[ORM\OneToMany(mappedBy: 'compteur', targetEntity: EspInscription::class, orphanRemoval: true)]
+    private Collection $espInscriptions;
+
+    public function __construct()
+    {
+        $this->espInscriptions = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return ($this->code_cpt ?? '') . ' ';
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getCodeCpt(): ?string
     {
@@ -98,6 +120,36 @@ class Compteur
     public function setValeur(int $valeur): static
     {
         $this->valeur = $valeur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EspInscription>
+     */
+    public function getEspInscriptions(): Collection
+    {
+        return $this->espInscriptions;
+    }
+
+    public function addEspInscription(EspInscription $espInscription): static
+    {
+        if (!$this->espInscriptions->contains($espInscription)) {
+            $this->espInscriptions->add($espInscription);
+            $espInscription->setCompteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEspInscription(EspInscription $espInscription): static
+    {
+        if ($this->espInscriptions->removeElement($espInscription)) {
+            // set the owning side to null (unless already changed)
+            if ($espInscription->getCompteur() === $this) {
+                $espInscription->setCompteur(null);
+            }
+        }
 
         return $this;
     }

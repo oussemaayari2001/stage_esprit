@@ -18,7 +18,7 @@ class CodeNomenclature
     #[ORM\ManyToOne(targetEntity: StrNome::class, fetch: 'LAZY', cascade: ['persist'])]
     #[ORM\JoinColumn(name: "code_str", referencedColumnName: "code_str", nullable: true, onDelete: "CASCADE")]
     private ?StrNome $code_str = null;
-    
+
     public function getLibNome(): ?string
     {
         return $this->lib_nome;
@@ -43,12 +43,12 @@ class CodeNomenclature
         return $this;
     }
 
-    public function getCode_str(): ?StrNome
+    public function getCodeStr(): ?StrNome
     {
         return $this->code_str;
     }
 
-    public function setCode_str(?StrNome $code_str): static
+    public function setCodeStr(?StrNome $code_str): static
     {
         $this->code_str = $code_str;
 

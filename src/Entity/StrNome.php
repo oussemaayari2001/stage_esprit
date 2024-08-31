@@ -9,12 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 class StrNome
 {
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(length: 2)]
     private ?string $code_str = null;
 
     #[ORM\Column(length: 35)]
     private ?string $nom_str = null;
-
 
     public function getCodeStr(): ?string
     {

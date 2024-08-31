@@ -8,18 +8,33 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EspInscriptionRepository::class)]
 class EspInscription
-{
-   
+{   
+ 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(length: 4)]
     private ?string $annee_deb = null;
+
+    #[ORM\Id]
+    #[ORM\Column]
+    private ?string $id = null;
 
     #[ORM\Column(length: 10)]
     private ?string $esp_annee_deb = null;
 
-    #[ORM\Column(length: 10)]
-    private ?string $code_cl = null;
+    #[ORM\ManyToOne(inversedBy: 'espInscriptions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Compteur $code_cl = null;
+    public function getCodeCl(): ?Compteur
+    {
+        return $this->code_cl;
+    }
+    public function setCodeCl(?Compteur $code_cl): static
+    {
+        $this->code_cl = $code_cl;
+
+        return $this;
+    }
+
 
     #[ORM\Column]
     private ?int $cout_annuel = null;
@@ -90,7 +105,18 @@ class EspInscription
     #[ORM\Column(length: 10)]
     private ?string $id_et = null;
 
- 
+    #[ORM\ManyToOne(inversedBy: 'espInscriptions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Compteur $compteur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'espInscriptions')]
+    #[ORM\JoinColumn(name :"etudiant", referencedColumnName :"id_et")]
+    private ?EspEtudiant $etudiant = null;
+
+    public function __toString(): string
+    {
+        return $this->annee_deb ?? '';
+    }
 
     public function getAnneeDeb(): ?string
     {
@@ -100,6 +126,18 @@ class EspInscription
     public function setAnneeDeb(string $annee_deb): static
     {
         $this->annee_deb = $annee_deb;
+
+        return $this;
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id): static
+    {
+        $this->id = $id;
 
         return $this;
     }
@@ -116,24 +154,12 @@ class EspInscription
         return $this;
     }
 
-    public function getCodeCl(): ?string
-    {
-        return $this->code_cl;
-    }
-
-    public function setCodeCl(string $code_cl): static
-    {
-        $this->code_cl = $code_cl;
-
-        return $this;
-    }
-
-    public function getCodeAnnuel(): ?int
+    public function getCoutAnnuel(): ?int
     {
         return $this->cout_annuel;
     }
 
-    public function setCodeAnnuel(int $cout_annuel): static
+    public function setCoutAnnuel(int $cout_annuel): static
     {
         $this->cout_annuel = $cout_annuel;
 
@@ -376,7 +402,6 @@ class EspInscription
     public function setDateInsc(\DateTimeInterface $date_insc): static
     {
         $this->date_insc = $date_insc;
-
         return $this;
     }
 
@@ -400,6 +425,30 @@ class EspInscription
     public function setIdEt(string $id_et): static
     {
         $this->id_et = $id_et;
+
+        return $this;
+    }
+
+    public function getCompteur(): ?Compteur
+    {
+        return $this->compteur;
+    }
+
+    public function setCompteur(?Compteur $compteur): static
+    {
+        $this->compteur = $compteur;
+
+        return $this;
+    }
+
+    public function getEtudiant(): ?EspEtudiant
+    {
+        return $this->etudiant;
+    }
+
+    public function setEtudiant(?EspEtudiant $etudiant): static
+    {
+        $this->etudiant = $etudiant;
 
         return $this;
     }

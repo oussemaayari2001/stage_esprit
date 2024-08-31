@@ -3,15 +3,21 @@
 namespace App\Entity;
 
 use App\Repository\ClasseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\CatergorieClasse;
 
 #[ORM\Entity(repositoryClass: ClasseRepository::class)]
 class Classe
 {
+    
+    #[ORM\GeneratedValue]
+    #[ORM\Column(length: 10)]
+    private ?int $id = null; 
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column(length: 10)]
     private ?string $code_cl = null;
 
@@ -45,6 +51,23 @@ class Classe
     #[ORM\Column(length: 4)]
     private ?string $annee_scolaire = null;
 
+    #[ORM\Column(type: "string", length: 20, enumType: CatergorieClasse::class)]
+    private CatergorieClasse $catergorie;
+
+    #[ORM\ManyToOne(inversedBy: 'classes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?EspSaisonClasse $Saison = null;
+
+    #[ORM\Column]
+    private ?bool $ouvert = null;
+
+    #[ORM\OneToMany(targetEntity: EspEtudiant::class, mappedBy: 'classe')]
+    private Collection $etudiants;
+
+    public function __construct()
+    {
+        $this->etudiants = new ArrayCollection();
+    }
 
     public function getCodeCl(): ?string
     {
@@ -69,7 +92,10 @@ class Classe
 
         return $this;
     }
-
+  public function getId(): ?int
+    {
+        return $this->id;
+    }
     public function getDescriptionCl(): ?string
     {
         return $this->description_cl;
@@ -174,6 +200,72 @@ class Classe
     public function setAnneeScolaire(string $annee_scolaire): static
     {
         $this->annee_scolaire = $annee_scolaire;
+
+        return $this;
+    }
+
+    public function getCatergorie(): CatergorieClasse
+    {
+        return $this->catergorie;
+    }
+
+    public function setCatergorie(CatergorieClasse $catergorie): static
+    {
+        $this->catergorie = $catergorie;
+
+        return $this;
+    }
+
+    public function getSaison(): ?EspSaisonClasse
+    {
+        return $this->Saison;
+    }
+
+    public function setSaison(?EspSaisonClasse $Saison): static
+    {
+        $this->Saison = $Saison;
+
+        return $this;
+    }
+
+    public function isOuvert(): ?bool
+    {
+        return $this->ouvert;
+    }
+
+    public function setOuvert(bool $ouvert): static
+    {
+        $this->ouvert = $ouvert;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EspEtudiant>
+     */
+    public function getEtudiants(): Collection
+    {
+        return $this->etudiants;
+    }
+
+    public function addEtudiant(EspEtudiant $etudiant): static
+    {
+        if (!$this->etudiants->contains($etudiant)) {
+            $this->etudiants->add($etudiant);
+            $etudiant->setClasse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtudiant(EspEtudiant $etudiant): static
+    {
+        if ($this->etudiants->removeElement($etudiant)) {
+            // set the owning side to null (unless already changed)
+            if ($etudiant->getClasse() === $this) {
+                $etudiant->setClasse(null);
+            }
+        }
 
         return $this;
     }
